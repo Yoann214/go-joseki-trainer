@@ -24,11 +24,11 @@ const playedMovesEl = document.getElementById("playedMoves");
 let JOSEKI = [];
 let currentJoseki = null;
 let currentVariations = [];
+let candidateVariations = [];
 let activeVariation = null;
-let activeSequence = null;
+let sequenceIndex = 0;
 let filteredJoseki = [];
 let stones = new Map();
-let sequenceIndex = 0;
 let hintIndex = 0;
 let playedMoves = [];
 let completed = false;
@@ -141,7 +141,8 @@ function showEmptyState(message) {
   playedMoves = [];
   currentJoseki = null;
   activeVariation = null;
-  activeSequence = null;
+  currentVariations = [];
+  candidateVariations = [];
   currentTitleEl.textContent = "Aucune carte";
   directLinkEl.textContent = "";
   variationBoxEl.style.display = "none";
@@ -164,8 +165,8 @@ function loadJoseki(id) {
   if (select.options.length > 0) select.value = currentJoseki.id;
 
   currentVariations = normalizeVariations(currentJoseki);
+  candidateVariations = [...currentVariations];
   activeVariation = currentVariations.length === 1 ? currentVariations[0] : null;
-  activeSequence = activeVariation ? activeVariation.sequence : null;
 
   updateUrl(currentJoseki.id);
 
@@ -181,11 +182,12 @@ function loadJoseki(id) {
   instructionEl.textContent = currentJoseki.instruction || "";
 
   variationBoxEl.style.display = currentVariations.length > 1 ? "block" : "none";
-  variationTitleEl.textContent = activeVariation ? activeVariation.name : "Choisie après ton premier coup";
+  variationTitleEl.textContent = activeVariation ? activeVariation.name : "Choisie automatiquement après ton coup";
 
   statusEl.className = "status";
   if (currentVariations.length > 1) {
-    statusEl.textContent = `Plusieurs séquences sont possibles. Joue le premier coup ${labelColor(currentJoseki.playColor).toLowerCase()} correct pour choisir la variation.`;
+    const firstMoves = getPossibleUserMoves().join(" ou ");
+    statusEl.textContent = `Plusieurs séquences sont possibles. Premier coup attendu : ${firstMoves}.`;
   } else {
     statusEl.textContent = `Clique sur le goban pour jouer le prochain coup ${labelColor(currentJoseki.playColor).toLowerCase()}.`;
   }
@@ -327,63 +329,70 @@ function clickedCoord(event) {
   return pointToCoord(x, y);
 }
 
-function firstExpectedUserMove(sequence) {
-  let index = 0;
-  while (index < sequence.length) {
-    const [color, coord] = sequence[index];
-    if (color === currentJoseki.playColor) return { coord, index };
-    index++;
-  }
-  return null;
+function getMoveAtCurrentIndex(variation) {
+  return variation.sequence[sequenceIndex];
 }
 
-function chooseVariationFromMove(coord) {
-  const matching = currentVariations.filter(variation => {
-    const expected = firstExpectedUserMove(variation.sequence);
-    return expected && expected.coord === coord;
+function getPossibleUserMoves() {
+  const moves = [];
+  candidateVariations.forEach(variation => {
+    const move = getMoveAtCurrentIndex(variation);
+    if (move && move[0] === currentJoseki.playColor && !moves.includes(move[1])) {
+      moves.push(move[1]);
+    }
   });
-
-  if (matching.length === 0) return false;
-
-  activeVariation = matching[0];
-  activeSequence = activeVariation.sequence;
-  sequenceIndex = firstExpectedUserMove(activeSequence).index;
-  variationTitleEl.textContent = activeVariation.name;
-  variationBoxEl.style.display = "block";
-  return true;
+  return moves;
 }
 
-function nextExpectedUserMove() {
-  if (!activeSequence) return null;
+function playAutomaticOpponentMoves() {
+  while (candidateVariations.length > 0) {
+    const firstMove = getMoveAtCurrentIndex(candidateVariations[0]);
 
-  while (sequenceIndex < activeSequence.length) {
-    const [color, coord] = activeSequence[sequenceIndex];
-    if (color === currentJoseki.playColor) return coord;
+    if (!firstMove) {
+      finishSequence();
+      return;
+    }
+
+    const [color, coord] = firstMove;
+
+    if (color === currentJoseki.playColor) {
+      break;
+    }
+
+    const allSameOpponentMove = candidateVariations.every(variation => {
+      const move = getMoveAtCurrentIndex(variation);
+      return move && move[0] === color && move[1] === coord;
+    });
+
+    if (!allSameOpponentMove) {
+      statusEl.className = "status bad";
+      statusEl.textContent = "Erreur de données : les variations divergent sur un coup automatique adverse.";
+      return;
+    }
 
     placeStone(color, coord);
     sequenceIndex++;
   }
-  return null;
-}
 
-function playOpponentMoves() {
-  if (!activeSequence) return;
-
-  while (sequenceIndex < activeSequence.length) {
-    const [color, coord] = activeSequence[sequenceIndex];
-    if (color !== currentJoseki.playColor) {
-      placeStone(color, coord);
-      sequenceIndex++;
-    } else {
-      break;
-    }
+  if (candidateVariations.length === 1) {
+    activeVariation = candidateVariations[0];
+    variationTitleEl.textContent = activeVariation.name;
   }
 
-  if (sequenceIndex >= activeSequence.length) finishSequence();
+  if (candidateVariations.length > 1) {
+    const possible = getPossibleUserMoves().join(" ou ");
+    statusEl.className = "status";
+    statusEl.textContent = `Plusieurs suites restent possibles. Coup attendu : ${possible}.`;
+  }
 }
 
 function finishSequence() {
   completed = true;
+  if (candidateVariations.length === 1) {
+    activeVariation = candidateVariations[0];
+    variationTitleEl.textContent = activeVariation.name;
+  }
+
   statusEl.className = "status ok";
   statusEl.textContent = "Séquence terminée. Les carrés verts indiquent les points intéressants ; les carrés rouges indiquent les mauvais coups.";
   showAnswer();
@@ -403,27 +412,34 @@ function handleClick(event) {
     return;
   }
 
-  if (!activeSequence) {
-    const chosen = chooseVariationFromMove(coord);
-    if (!chosen) {
-      statusEl.className = "status bad";
-      statusEl.textContent = `Pas ce coup. Tu as joué ${coord}. Cherche l'une des réponses correctes.`;
-      return;
-    }
+  const matchingVariations = candidateVariations.filter(variation => {
+    const move = getMoveAtCurrentIndex(variation);
+    return move && move[0] === currentJoseki.playColor && move[1] === coord;
+  });
+
+  if (matchingVariations.length === 0) {
+    const possible = getPossibleUserMoves().join(" ou ");
+    statusEl.className = "status bad";
+    statusEl.textContent = `Pas ce coup. Tu as joué ${coord}. Coup attendu : ${possible}.`;
+    return;
   }
 
-  const expected = nextExpectedUserMove();
-  if (!expected) return;
+  candidateVariations = matchingVariations;
+  placeStone(currentJoseki.playColor, coord);
+  sequenceIndex++;
 
-  if (coord === expected) {
-    placeStone(currentJoseki.playColor, coord);
-    sequenceIndex++;
-    statusEl.className = "status ok";
-    statusEl.textContent = `Correct : ${labelColor(currentJoseki.playColor)} ${coord}.`;
-    playOpponentMoves();
-  } else {
-    statusEl.className = "status bad";
-    statusEl.textContent = `Pas ce coup. Tu as joué ${coord}. Cherche la direction du plan.`;
+  if (candidateVariations.length === 1) {
+    activeVariation = candidateVariations[0];
+    variationTitleEl.textContent = activeVariation.name;
+  }
+
+  statusEl.className = "status ok";
+  statusEl.textContent = `Correct : ${labelColor(currentJoseki.playColor)} ${coord}.`;
+  playAutomaticOpponentMoves();
+
+  const first = candidateVariations[0];
+  if (first && sequenceIndex >= first.sequence.length) {
+    finishSequence();
   }
 }
 
@@ -466,7 +482,7 @@ function showAnswer() {
       return `<strong>${variation.name}</strong>${active}<br>${sequenceToText(variation.sequence)}`;
     }).join("<br><br>");
   } else {
-    sequenceHtml = sequenceToText(activeSequence || currentVariations[0]?.sequence || []);
+    sequenceHtml = sequenceToText(currentVariations[0]?.sequence || []);
   }
 
   answerBox.innerHTML = `<strong>Séquence :</strong><br>${sequenceHtml}<br><br><strong>Explication :</strong><br>${currentJoseki.explanation || ""}`;
