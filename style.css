@@ -23,21 +23,21 @@ html, body {
 body {
   font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   color: var(--text);
-  background: radial-gradient(circle at top left, #fbf7ef 0%, #f5efe5 40%, #eee6d8 100%);
+  background: radial-gradient(circle at top left, #fbf7ef 0%, #f5efe5 42%, #eee6d8 100%);
 }
 
 /* =========================
    VERSION PC
    ========================= */
 .app {
-  height: 100vh;
-  max-height: 100vh;
   width: 100%;
-  padding: 14px;
+  min-height: 100vh;
+  padding: 16px;
   display: grid;
-  grid-template-columns: 240px minmax(520px, 1fr) 150px;
-  gap: 14px;
-  overflow: hidden;
+  grid-template-columns: 280px minmax(620px, 860px) 220px;
+  gap: 16px;
+  align-items: start;
+  justify-content: center;
 }
 
 .side-panel,
@@ -49,7 +49,7 @@ body {
 }
 
 .side-panel {
-  padding: 14px;
+  padding: 16px;
 }
 
 .left-panel {
@@ -61,8 +61,10 @@ body {
 .right-panel {
   display: flex;
   flex-direction: column;
-  gap: 10px;
-  justify-content: center;
+  gap: 12px;
+  justify-content: flex-start;
+  align-self: start;
+  padding-top: 24px;
 }
 
 .brand {
@@ -93,11 +95,10 @@ input[type="text"], select {
 
 .study-card {
   min-width: 0;
-  padding: 14px;
+  padding: 16px;
   display: grid;
-  grid-template-rows: auto minmax(0, 1fr) auto auto;
-  gap: 10px;
-  overflow: hidden;
+  grid-template-rows: auto auto auto auto auto;
+  gap: 12px;
 }
 
 .study-header {
@@ -135,26 +136,26 @@ h1 {
 }
 
 .board-shell {
-  min-height: 0;
-  background: linear-gradient(180deg, #f6e7bf 0%, #e7c46d 100%);
-  border: 1px solid #d4b25d;
-  border-radius: 18px;
-  padding: 10px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  overflow: hidden;
+  width: fit-content;
+  max-width: 100%;
+  margin: 0 auto;
+  background: transparent;
+  border: none;
+  border-radius: 0;
+  padding: 0;
+  display: block;
+  overflow: visible;
 }
 
 canvas {
   display: block;
-  width: auto;
-  height: 100%;
-  max-width: 100%;
+  width: min(72vh, 760px, 100%);
+  height: auto;
   aspect-ratio: 1 / 1;
   background: var(--board);
-  border-radius: 12px;
-  border: 1px solid rgba(74, 47, 10, 0.25);
+  border-radius: 14px;
+  border: 1px solid rgba(74, 47, 10, 0.28);
+  box-shadow: 0 10px 24px rgba(75, 50, 14, .14);
   touch-action: manipulation;
 }
 
@@ -259,11 +260,12 @@ canvas {
 button {
   border: none;
   border-radius: 14px;
-  padding: 13px 10px;
-  font-size: .93rem;
+  padding: 13px 12px;
+  font-size: .94rem;
   font-weight: 800;
   cursor: pointer;
   transition: transform .08s ease;
+  width: 100%;
 }
 
 button:hover { transform: translateY(-1px); }
@@ -294,25 +296,92 @@ button.danger {
 .answer { background: #ecfdf5; border: 1px solid #b7ebcc; }
 
 /* =========================
+   VERSION PC LARGE
+   ========================= */
+@media (min-width: 1500px) {
+  .app {
+    grid-template-columns: 320px minmax(720px, 900px) 250px;
+    gap: 20px;
+  }
+
+  canvas {
+    width: min(74vh, 820px, 100%);
+  }
+}
+
+/* =========================
+   VERSION PC BASSE HAUTEUR
+   ========================= */
+@media (max-height: 820px) and (min-width: 821px) {
+  .app {
+    grid-template-columns: 270px minmax(560px, 760px) 200px;
+    gap: 12px;
+    padding: 10px;
+  }
+
+  .side-panel,
+  .study-card {
+    border-radius: 18px;
+  }
+
+  .study-card {
+    padding: 12px;
+    gap: 8px;
+  }
+
+  h1 {
+    font-size: 1.18rem;
+  }
+
+  .goal-text {
+    font-size: .9rem;
+  }
+
+  .secondary-text {
+    font-size: .82rem;
+    line-height: 1.2;
+  }
+
+  canvas {
+    width: min(66vh, 660px, 100%);
+  }
+
+  .progress-card,
+  .status,
+  .variation-box {
+    padding: 8px 10px;
+  }
+
+  .move-list li {
+    min-width: 46px;
+    padding: 6px 7px;
+  }
+
+  .move-stone {
+    width: 18px;
+    height: 18px;
+  }
+
+  button {
+    padding: 11px 10px;
+  }
+}
+
+/* =========================
    VERSION TELEPHONE
    ========================= */
 @media (max-width: 820px) {
-  html, body {
-    min-height: 100%;
-  }
-
   body {
     overflow: auto;
   }
 
   .app {
-    height: auto;
-    max-height: none;
     min-height: 100vh;
     grid-template-columns: 1fr;
     padding: 10px;
     gap: 10px;
-    overflow: visible;
+    align-items: stretch;
+    justify-content: stretch;
   }
 
   .left-panel {
@@ -331,6 +400,7 @@ button.danger {
     display: grid;
     grid-template-columns: 1fr;
     justify-content: stretch;
+    padding-top: 12px;
   }
 
   .brand {
@@ -351,7 +421,7 @@ button.danger {
   }
 
   .board-shell {
-    padding: 8px;
+    width: 100%;
     margin: 10px 0;
   }
 
