@@ -69,7 +69,7 @@ function normalizeVariations(joseki) {
 
 async function loadJosekiData() {
   try {
-    const response = await fetch("joseki.json?v=4", { cache: "no-store" });
+    const response = await fetch("joseki.json?v=5", { cache: "no-store" });
     if (!response.ok) throw new Error(`HTTP ${response.status}`);
     JOSEKI = await response.json();
     filteredJoseki = [...JOSEKI];
@@ -187,9 +187,9 @@ function loadJoseki(id) {
   statusEl.className = "status";
   if (currentVariations.length > 1) {
     const firstMoves = getPossibleUserMoves().join(" ou ");
-    statusEl.textContent = `V4 chargée. Plusieurs séquences sont possibles. Premier coup attendu : ${firstMoves}.`;
+    statusEl.textContent = `V5 chargée. Plusieurs séquences sont possibles. Premier coup attendu : ${firstMoves}.`;
   } else {
-    statusEl.textContent = `V4 chargée. Clique sur le goban pour jouer le prochain coup ${labelColor(currentJoseki.playColor).toLowerCase()}.`;
+    statusEl.textContent = `V5 chargée. Clique sur le goban pour jouer le prochain coup ${labelColor(currentJoseki.playColor).toLowerCase()}.`;
   }
 
   hintBox.style.display = "none";
@@ -263,9 +263,20 @@ function drawBoard() {
   ctx.fillStyle = "rgba(0,0,0,.65)";
   ctx.textAlign = "center";
   ctx.textBaseline = "middle";
+
   for (let i = 0; i < BOARD_SIZE; i++) {
-    ctx.fillText(LETTERS[i], margin + i * grid, h - margin * 0.42);
-    ctx.fillText(String(BOARD_SIZE - i), margin * 0.42, margin + i * grid);
+    const x = margin + i * grid;
+    const y = margin + i * grid;
+    const letter = LETTERS[i];
+    const number = String(BOARD_SIZE - i);
+
+    // Coordonnées en haut et en bas
+    ctx.fillText(letter, x, margin * 0.42);
+    ctx.fillText(letter, x, h - margin * 0.42);
+
+    // Coordonnées à gauche et à droite
+    ctx.fillText(number, margin * 0.42, y);
+    ctx.fillText(number, w - margin * 0.42, y);
   }
 
   stones.forEach((color, pos) => {
