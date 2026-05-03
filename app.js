@@ -5,6 +5,8 @@ const canvas = document.getElementById("board");
 const ctx = canvas.getContext("2d");
 const searchInput = document.getElementById("josekiSearch");
 const select = document.getElementById("josekiSelect");
+const currentTitleEl = document.getElementById("currentTitle");
+const directLinkEl = document.getElementById("directLink");
 const tagsEl = document.getElementById("tags");
 const goalEl = document.getElementById("goal");
 const priorityEl = document.getElementById("priority");
@@ -63,13 +65,20 @@ async function loadJosekiData() {
     }
   } catch (error) {
     console.error(error);
-    showEmptyState("Impossible de charger joseki.json. Sur ordinateur, lance la page via un petit serveur local ou publie-la sur GitHub Pages.");
+    showEmptyState("Impossible de charger joseki.json. Vérifie que le fichier est bien à la racine du dépôt GitHub.");
   }
 }
 
 function getRequestedJosekiId() {
   const params = new URLSearchParams(window.location.search);
   return params.get("joseki") || params.get("id");
+}
+
+function updateUrl(id) {
+  const url = new URL(window.location.href);
+  url.searchParams.set("joseki", id);
+  window.history.replaceState({}, "", url);
+  directLinkEl.textContent = url.href;
 }
 
 function populateSelect(list) {
@@ -110,6 +119,8 @@ function showEmptyState(message) {
   stones = new Map();
   playedMoves = [];
   currentJoseki = null;
+  currentTitleEl.textContent = "Aucune carte";
+  directLinkEl.textContent = "";
   tagsEl.innerHTML = "";
   goalEl.textContent = "";
   priorityEl.textContent = "";
@@ -127,12 +138,15 @@ function loadJoseki(id) {
   if (!currentJoseki) return;
   if (select.options.length > 0) select.value = currentJoseki.id;
 
+  updateUrl(currentJoseki.id);
+
   stones = new Map();
   sequenceIndex = 0;
   hintIndex = 0;
   playedMoves = [];
   completed = false;
 
+  currentTitleEl.textContent = currentJoseki.title || currentJoseki.id;
   goalEl.textContent = currentJoseki.goal || "";
   priorityEl.textContent = currentJoseki.priority || "";
   instructionEl.textContent = currentJoseki.instruction || "";
@@ -219,7 +233,7 @@ function drawBoard() {
     drawStone(margin + x * grid, margin + y * grid, grid * 0.43, color);
   });
 
-  if (completed && currentJoseki) drawReviewMarkers(margin, grid);
+  if (completed) drawReviewMarkers(margin, grid);
 }
 
 function drawStone(cx, cy, r, color) {
@@ -264,8 +278,10 @@ function clickedCoord(event) {
   const rect = canvas.getBoundingClientRect();
   const px = (event.clientX - rect.left) * (canvas.width / rect.width);
   const py = (event.clientY - rect.top) * (canvas.height / rect.height);
+
   const margin = Math.round(canvas.width * 0.08);
   const grid = (canvas.width - 2 * margin) / (BOARD_SIZE - 1);
+
   const x = Math.round((px - margin) / grid);
   const y = Math.round((py - margin) / grid);
 
@@ -307,7 +323,7 @@ function finishSequence() {
 }
 
 function handleClick(event) {
-  if (!currentJoseki || completed) return;
+  if (completed || !currentJoseki) return;
 
   const coord = clickedCoord(event);
   if (!coord) return;
@@ -358,7 +374,7 @@ function showHint() {
 
 function showAnswer() {
   if (!currentJoseki) return;
-  const seq = currentJoseki.sequence
+  const seq = (currentJoseki.sequence || [])
     .map(([color, coord]) => `${labelColor(color)} ${coord}`)
     .join(" → ");
 

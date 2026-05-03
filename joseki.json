@@ -3,7 +3,13 @@
     "id": "44-33-developper-droit",
     "title": "44-33-developper-droit",
     "playColor": "B",
-    "tags": ["4-4", "3-3", "invasion", "extérieur", "côté droit"],
+    "tags": [
+      "4-4",
+      "3-3",
+      "invasion",
+      "extérieur",
+      "côté droit"
+    ],
     "goal": "Joue Noir pour développer le côté droit du plateau.",
     "priority": "Le sente n’est pas la priorité. Cherche le meilleur résultat local pour obtenir l’extérieur vers le côté droit.",
     "instruction": "Blanc envahit le 3-3 sous ton hoshi. Joue les coups noirs qui donnent à Noir l’extérieur vers le côté droit.",
@@ -13,18 +19,78 @@
       "La séquence est gote pour Noir : le but est le bon résultat local."
     ],
     "explanation": "Noir bloque du côté le plus large, ici le côté droit. Blanc obtient le coin, tandis que Noir construit une influence extérieure orientée vers le bord droit.",
-    "start": [["B", "Q16"], ["W", "R17"]],
-    "sequence": [["B", "R16"], ["W", "Q17"], ["B", "P17"], ["W", "P18"], ["B", "O17"], ["W", "O18"], ["B", "N17"], ["W", "N18"], ["B", "M17"]],
+    "start": [
+      [
+        "B",
+        "Q16"
+      ],
+      [
+        "W",
+        "R17"
+      ]
+    ],
+    "sequence": [
+      [
+        "B",
+        "R16"
+      ],
+      [
+        "W",
+        "Q17"
+      ],
+      [
+        "B",
+        "P17"
+      ],
+      [
+        "W",
+        "P18"
+      ],
+      [
+        "B",
+        "O17"
+      ],
+      [
+        "W",
+        "O18"
+      ],
+      [
+        "B",
+        "N17"
+      ],
+      [
+        "W",
+        "N18"
+      ],
+      [
+        "B",
+        "M17"
+      ]
+    ],
     "reviewMarkers": {
-      "good": ["K17", "S16", "P15", "Q11", "Q10"],
-      "bad": ["M18"]
+      "good": [
+        "K17",
+        "S16",
+        "P15",
+        "Q11",
+        "Q10"
+      ],
+      "bad": [
+        "M18"
+      ]
     }
   },
   {
     "id": "44-33-invasion",
     "title": "44-33-invasion",
     "playColor": "W",
-    "tags": ["4-4", "3-3", "invasion", "coin", "jouer blanc"],
+    "tags": [
+      "4-4",
+      "3-3",
+      "invasion",
+      "coin",
+      "jouer blanc"
+    ],
     "goal": "Joue Blanc pour envahir le 3-3 et obtenir le coin.",
     "priority": "Accepte que Noir construise l’extérieur. Ton objectif est de prendre le coin proprement.",
     "instruction": "Tu joues Blanc. La position de départ contient seulement la pierre noire 4-4. Commence par l’invasion 3-3, puis suis la séquence.",
@@ -34,11 +100,65 @@
       "La séquence donne le coin à Blanc et l’extérieur à Noir."
     ],
     "explanation": "Blanc envahit le 3-3 et suit la séquence locale pour prendre le coin. Noir obtient l’extérieur vers le côté droit ; Blanc obtient une vie de coin claire.",
-    "start": [["B", "Q16"]],
-    "sequence": [["W", "R17"], ["B", "R16"], ["W", "Q17"], ["B", "P17"], ["W", "P18"], ["B", "O17"], ["W", "O18"], ["B", "N17"], ["W", "N18"], ["B", "M17"]],
+    "start": [
+      [
+        "B",
+        "Q16"
+      ]
+    ],
+    "sequence": [
+      [
+        "W",
+        "R17"
+      ],
+      [
+        "B",
+        "R16"
+      ],
+      [
+        "W",
+        "Q17"
+      ],
+      [
+        "B",
+        "P17"
+      ],
+      [
+        "W",
+        "P18"
+      ],
+      [
+        "B",
+        "O17"
+      ],
+      [
+        "W",
+        "O18"
+      ],
+      [
+        "B",
+        "N17"
+      ],
+      [
+        "W",
+        "N18"
+      ],
+      [
+        "B",
+        "M17"
+      ]
+    ],
     "reviewMarkers": {
-      "good": ["K17", "S16", "P15", "Q11", "Q10"],
-      "bad": ["M18"]
+      "good": [
+        "K17",
+        "S16",
+        "P15",
+        "Q11",
+        "Q10"
+      ],
+      "bad": [
+        "M18"
+      ]
     }
   }
 ]
