@@ -4,28 +4,25 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Go Joseki Trainer</title>
-  <link rel="stylesheet" href="style.css?v=6" />
+  <link rel="stylesheet" href="style.css?v=7" />
 </head>
 <body>
   <main class="app">
-    <aside class="sidebar">
-      <div class="panel brand-panel">
-        <h1>Go Joseki Trainer</h1>
-        <p class="muted">Mode étude clair — tu joues uniquement la couleur demandée.</p>
-      </div>
-
-      <div class="panel">
-        <label for="josekiSearch">Recherche</label>
-        <input type="text" id="josekiSearch" placeholder="Ex : san-rensei ou 44-33-invasion" />
-
-        <label for="josekiSelect">Joseki à travailler</label>
+    <header class="topbar">
+      <div class="brand">Go Joseki Trainer</div>
+      <div class="topbar-controls">
+        <input type="text" id="josekiSearch" placeholder="Rechercher une séquence..." />
         <select id="josekiSelect"></select>
+      </div>
+    </header>
 
-        <div class="current-card">
-          <span class="current-card-label">Carte actuelle</span>
-          <strong id="currentTitle">Chargement...</strong>
-          <code id="directLink"></code>
-        </div>
+    <section class="study-card">
+      <div class="study-header">
+        <div class="eyebrow">Séquence de travail</div>
+        <h1 id="currentTitle">Chargement...</h1>
+        <p id="goal" class="goal-text">Chargement de l'objectif...</p>
+        <p id="priority" class="secondary-text"></p>
+        <p id="instruction" class="secondary-text"></p>
 
         <div class="variation-box" id="variationBox">
           <span class="variation-label">Variation active</span>
@@ -33,62 +30,33 @@
         </div>
       </div>
 
-      <div class="panel info-panel">
-        <div class="tag-row" id="tags"></div>
-
-        <div class="section-block">
-          <div class="section-title">Objectif</div>
-          <p id="goal"></p>
-        </div>
-
-        <div class="section-block">
-          <div class="section-title">Priorité</div>
-          <p id="priority"></p>
-        </div>
-
-        <div class="section-block">
-          <div class="section-title">Consigne</div>
-          <p id="instruction"></p>
-        </div>
-
-        <div class="status" id="status">Chargement des joseki...</div>
-
-        <div class="controls">
-          <button id="hintBtn" class="secondary">Indice</button>
-          <button id="resetBtn" class="secondary">Recommencer</button>
-          <button id="answerBtn" class="danger">Voir la réponse</button>
-        </div>
-
-        <div class="hint" id="hintBox"></div>
-        <div class="answer" id="answerBox"></div>
-      </div>
-    </aside>
-
-    <section class="workspace">
-      <div class="panel board-panel">
-        <div class="board-header">
-          <div>
-            <div class="board-title">Goban</div>
-            <div class="board-subtitle">Travaille la séquence directement sur le plateau.</div>
-          </div>
-        </div>
-        <div class="board-wrap">
-          <canvas id="board" width="760" height="760" aria-label="Goban interactif"></canvas>
-        </div>
+      <div class="board-shell">
+        <canvas id="board" width="760" height="760" aria-label="Goban interactif"></canvas>
       </div>
 
-      <div class="panel sequence-panel">
-        <div class="sequence-top">
+      <div class="status" id="status">Chargement des joseki...</div>
+
+      <section class="progress-card">
+        <div class="progress-header">
           <div>
-            <div class="section-title">Séquence jouée</div>
-            <div class="muted small">Les coups se remplissent à mesure que tu joues.</div>
+            <div class="eyebrow">Séquence jouée</div>
+            <div class="progress-count"><span id="playedCount">0</span>/<span id="totalCount">0</span> coups joués</div>
           </div>
         </div>
         <ol class="move-list" id="playedMoves"></ol>
+      </section>
+
+      <div class="controls">
+        <button id="hintBtn" class="secondary">Indice</button>
+        <button id="resetBtn" class="secondary">Recommencer</button>
+        <button id="answerBtn" class="danger">Voir la réponse</button>
       </div>
+
+      <div class="hint" id="hintBox"></div>
+      <div class="answer" id="answerBox"></div>
     </section>
   </main>
 
-  <script src="app.js?v=6"></script>
+  <script src="app.js?v=7"></script>
 </body>
 </html>
