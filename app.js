@@ -6,10 +6,8 @@ const ctx = canvas.getContext("2d");
 const searchInput = document.getElementById("josekiSearch");
 const select = document.getElementById("josekiSelect");
 const currentTitleEl = document.getElementById("currentTitle");
-const directLinkEl = document.getElementById("directLink");
 const variationBoxEl = document.getElementById("variationBox");
 const variationTitleEl = document.getElementById("variationTitle");
-const tagsEl = document.getElementById("tags");
 const goalEl = document.getElementById("goal");
 const priorityEl = document.getElementById("priority");
 const instructionEl = document.getElementById("instruction");
@@ -20,6 +18,8 @@ const answerBtn = document.getElementById("answerBtn");
 const hintBox = document.getElementById("hintBox");
 const answerBox = document.getElementById("answerBox");
 const playedMovesEl = document.getElementById("playedMoves");
+const playedCountEl = document.getElementById("playedCount");
+const totalCountEl = document.getElementById("totalCount");
 
 let JOSEKI = [];
 let currentJoseki = null;
@@ -43,13 +43,8 @@ function pointToCoord(x, y) {
   return LETTERS[x] + (BOARD_SIZE - y);
 }
 
-function key(x, y) {
-  return `${x},${y}`;
-}
-
-function labelColor(color) {
-  return color === "B" ? "Noir" : "Blanc";
-}
+function key(x, y) { return `${x},${y}`; }
+function labelColor(color) { return color === "B" ? "Noir" : "Blanc"; }
 
 function normalizeVariations(joseki) {
   if (Array.isArray(joseki.variations) && joseki.variations.length > 0) {
@@ -59,25 +54,18 @@ function normalizeVariations(joseki) {
       sequence: variation.sequence || []
     }));
   }
-
-  return [{
-    id: "main",
-    name: "Séquence principale",
-    sequence: joseki.sequence || []
-  }];
+  return [{ id: "main", name: "Séquence principale", sequence: joseki.sequence || [] }];
 }
 
 async function loadJosekiData() {
   try {
-    const response = await fetch("joseki.json?v=5", { cache: "no-store" });
+    const response = await fetch("joseki.json?v=8", { cache: "no-store" });
     if (!response.ok) throw new Error(`HTTP ${response.status}`);
     JOSEKI = await response.json();
     filteredJoseki = [...JOSEKI];
     populateSelect(filteredJoseki);
-
     const requested = getRequestedJosekiId();
     const firstId = requested && JOSEKI.some(j => j.id === requested) ? requested : JOSEKI[0]?.id;
-
     if (firstId) {
       loadJoseki(firstId);
       if (requested) searchInput.value = requested;
@@ -86,20 +74,13 @@ async function loadJosekiData() {
     }
   } catch (error) {
     console.error(error);
-    showEmptyState("Impossible de charger joseki.json. Vérifie que le fichier est bien à la racine du dépôt GitHub.");
+    showEmptyState("Impossible de charger joseki.json.");
   }
 }
 
 function getRequestedJosekiId() {
   const params = new URLSearchParams(window.location.search);
   return params.get("joseki") || params.get("id");
-}
-
-function updateUrl(id) {
-  const url = new URL(window.location.href);
-  url.searchParams.set("joseki", id);
-  window.history.replaceState({}, "", url);
-  directLinkEl.textContent = url.href;
 }
 
 function populateSelect(list) {
@@ -110,7 +91,6 @@ function populateSelect(list) {
     option.textContent = j.title;
     select.appendChild(option);
   });
-
   if (list.length > 0) {
     const stillVisible = currentJoseki && list.some(j => j.id === currentJoseki.id);
     if (!stillVisible) currentJoseki = list[0];
@@ -126,14 +106,9 @@ function filterJoseki() {
     const tags = (j.tags || []).join(" ").toLowerCase();
     return title.includes(query) || id.includes(query) || tags.includes(query);
   });
-
   populateSelect(filteredJoseki);
-
-  if (filteredJoseki.length > 0) {
-    loadJoseki(select.value);
-  } else {
-    showEmptyState("Aucun joseki ne correspond à la recherche.");
-  }
+  if (filteredJoseki.length > 0) loadJoseki(select.value);
+  else showEmptyState("Aucun joseki ne correspond à la recherche.");
 }
 
 function showEmptyState(message) {
@@ -144,10 +119,8 @@ function showEmptyState(message) {
   currentVariations = [];
   candidateVariations = [];
   currentTitleEl.textContent = "Aucune carte";
-  directLinkEl.textContent = "";
   variationBoxEl.style.display = "none";
   variationTitleEl.textContent = "Aucune";
-  tagsEl.innerHTML = "";
   goalEl.textContent = "";
   priorityEl.textContent = "";
   instructionEl.textContent = "";
@@ -168,8 +141,6 @@ function loadJoseki(id) {
   candidateVariations = [...currentVariations];
   activeVariation = currentVariations.length === 1 ? currentVariations[0] : null;
 
-  updateUrl(currentJoseki.id);
-
   stones = new Map();
   sequenceIndex = 0;
   hintIndex = 0;
@@ -180,30 +151,21 @@ function loadJoseki(id) {
   goalEl.textContent = currentJoseki.goal || "";
   priorityEl.textContent = currentJoseki.priority || "";
   instructionEl.textContent = currentJoseki.instruction || "";
-
   variationBoxEl.style.display = currentVariations.length > 1 ? "block" : "none";
   variationTitleEl.textContent = activeVariation ? activeVariation.name : "Choisie automatiquement après ton coup";
 
   statusEl.className = "status";
   if (currentVariations.length > 1) {
     const firstMoves = getPossibleUserMoves().join(" ou ");
-    statusEl.textContent = `V5 chargée. Plusieurs séquences sont possibles. Premier coup attendu : ${firstMoves}.`;
+    statusEl.textContent = `V8 chargée. Plusieurs séquences sont possibles. Premier coup attendu : ${firstMoves}.`;
   } else {
-    statusEl.textContent = `V5 chargée. Clique sur le goban pour jouer le prochain coup ${labelColor(currentJoseki.playColor).toLowerCase()}.`;
+    statusEl.textContent = `V8 chargée. Clique sur le goban pour jouer le prochain coup ${labelColor(currentJoseki.playColor).toLowerCase()}.`;
   }
 
   hintBox.style.display = "none";
   answerBox.style.display = "none";
   hintBox.textContent = "";
   answerBox.innerHTML = "";
-
-  tagsEl.innerHTML = "";
-  (currentJoseki.tags || []).forEach(tag => {
-    const span = document.createElement("span");
-    span.className = "tag";
-    span.textContent = tag;
-    tagsEl.appendChild(span);
-  });
 
   (currentJoseki.start || []).forEach(([color, coord]) => placeStone(color, coord, false));
   renderPlayedMoves();
@@ -214,12 +176,10 @@ function placeStone(color, coord, record = true) {
   const { x, y } = coordToPoint(coord);
   if (x < 0 || y < 0 || x >= BOARD_SIZE || y >= BOARD_SIZE) return;
   stones.set(key(x, y), color);
-
   if (record) {
     playedMoves.push([color, coord]);
     renderPlayedMoves();
   }
-
   drawBoard();
 }
 
@@ -238,12 +198,10 @@ function drawBoard() {
 
   for (let i = 0; i < BOARD_SIZE; i++) {
     const p = margin + i * grid;
-
     ctx.beginPath();
     ctx.moveTo(margin, p);
     ctx.lineTo(w - margin, p);
     ctx.stroke();
-
     ctx.beginPath();
     ctx.moveTo(p, margin);
     ctx.lineTo(p, h - margin);
@@ -269,12 +227,8 @@ function drawBoard() {
     const y = margin + i * grid;
     const letter = LETTERS[i];
     const number = String(BOARD_SIZE - i);
-
-    // Coordonnées en haut et en bas
     ctx.fillText(letter, x, margin * 0.42);
     ctx.fillText(letter, x, h - margin * 0.42);
-
-    // Coordonnées à gauche et à droite
     ctx.fillText(number, margin * 0.42, y);
     ctx.fillText(number, w - margin * 0.42, y);
   }
@@ -296,7 +250,6 @@ function drawStone(cx, cy, r, color) {
     gradient.addColorStop(0, "#fff");
     gradient.addColorStop(1, "#d8d8d8");
   }
-
   ctx.beginPath();
   ctx.arc(cx, cy, r, 0, Math.PI * 2);
   ctx.fillStyle = gradient;
@@ -308,12 +261,10 @@ function drawStone(cx, cy, r, color) {
 
 function drawReviewMarkers(margin, grid) {
   const markers = currentJoseki.reviewMarkers || { good: [], bad: [] };
-
   (markers.good || []).forEach(coord => {
     const { x, y } = coordToPoint(coord);
     drawSquareMarker(margin + x * grid, margin + y * grid, grid * 0.24, "#16a34a");
   });
-
   (markers.bad || []).forEach(coord => {
     const { x, y } = coordToPoint(coord);
     drawSquareMarker(margin + x * grid, margin + y * grid, grid * 0.24, "#dc2626");
@@ -329,13 +280,10 @@ function clickedCoord(event) {
   const rect = canvas.getBoundingClientRect();
   const px = (event.clientX - rect.left) * (canvas.width / rect.width);
   const py = (event.clientY - rect.top) * (canvas.height / rect.height);
-
   const margin = Math.round(canvas.width * 0.08);
   const grid = (canvas.width - 2 * margin) / (BOARD_SIZE - 1);
-
   const x = Math.round((px - margin) / grid);
   const y = Math.round((py - margin) / grid);
-
   if (x < 0 || y < 0 || x >= BOARD_SIZE || y >= BOARD_SIZE) return null;
   return pointToCoord(x, y);
 }
@@ -348,9 +296,7 @@ function getPossibleUserMoves() {
   const moves = [];
   candidateVariations.forEach(variation => {
     const move = getMoveAtCurrentIndex(variation);
-    if (move && move[0] === currentJoseki.playColor && !moves.includes(move[1])) {
-      moves.push(move[1]);
-    }
+    if (move && move[0] === currentJoseki.playColor && !moves.includes(move[1])) moves.push(move[1]);
   });
   return moves;
 }
@@ -358,38 +304,28 @@ function getPossibleUserMoves() {
 function playAutomaticOpponentMoves() {
   while (candidateVariations.length > 0) {
     const firstMove = getMoveAtCurrentIndex(candidateVariations[0]);
-
     if (!firstMove) {
       finishSequence();
       return;
     }
-
     const [color, coord] = firstMove;
-
-    if (color === currentJoseki.playColor) {
-      break;
-    }
-
+    if (color === currentJoseki.playColor) break;
     const allSameOpponentMove = candidateVariations.every(variation => {
       const move = getMoveAtCurrentIndex(variation);
       return move && move[0] === color && move[1] === coord;
     });
-
     if (!allSameOpponentMove) {
       statusEl.className = "status bad";
       statusEl.textContent = "Erreur de données : les variations divergent sur un coup automatique adverse.";
       return;
     }
-
     placeStone(color, coord);
     sequenceIndex++;
   }
-
   if (candidateVariations.length === 1) {
     activeVariation = candidateVariations[0];
     variationTitleEl.textContent = activeVariation.name;
   }
-
   if (candidateVariations.length > 1) {
     const possible = getPossibleUserMoves().join(" ou ");
     statusEl.className = "status";
@@ -403,7 +339,6 @@ function finishSequence() {
     activeVariation = candidateVariations[0];
     variationTitleEl.textContent = activeVariation.name;
   }
-
   statusEl.className = "status ok";
   statusEl.textContent = "Séquence terminée. Les carrés verts indiquent les points intéressants ; les carrés rouges indiquent les mauvais coups.";
   showAnswer();
@@ -412,98 +347,92 @@ function finishSequence() {
 
 function handleClick(event) {
   if (event.cancelable) event.preventDefault();
-
   if (completed || !currentJoseki) return;
-
   const coord = clickedCoord(event);
   if (!coord) return;
-
   const { x, y } = coordToPoint(coord);
-
   if (stones.has(key(x, y))) {
     statusEl.className = "status bad";
     statusEl.textContent = `Tu as cliqué ${coord}, mais cette intersection est déjà occupée.`;
     return;
   }
-
-  if (!candidateVariations || candidateVariations.length === 0) {
-    statusEl.className = "status bad";
-    statusEl.textContent = "Erreur : aucune variation disponible pour cette carte.";
-    return;
-  }
-
   const expectedMoves = getPossibleUserMoves();
-
   if (expectedMoves.length === 0) {
     statusEl.className = "status bad";
     statusEl.textContent = "Erreur : aucun coup utilisateur attendu à ce moment de la séquence.";
     return;
   }
-
   const matchingVariations = candidateVariations.filter(variation => {
     const move = getMoveAtCurrentIndex(variation);
     return move && move[0] === currentJoseki.playColor && move[1] === coord;
   });
-
   if (matchingVariations.length === 0) {
     statusEl.className = "status bad";
     statusEl.textContent = `Tu as cliqué ${coord}. Coup attendu : ${expectedMoves.join(" ou ")}.`;
     return;
   }
-
   candidateVariations = matchingVariations;
   placeStone(currentJoseki.playColor, coord);
   sequenceIndex++;
-
   if (candidateVariations.length === 1) {
     activeVariation = candidateVariations[0];
     variationTitleEl.textContent = activeVariation.name;
   }
-
   statusEl.className = "status ok";
   statusEl.textContent = `Correct : ${labelColor(currentJoseki.playColor)} ${coord}.`;
-
   playAutomaticOpponentMoves();
-
   const first = candidateVariations[0];
-  if (first && sequenceIndex >= first.sequence.length && !completed) {
-    finishSequence();
+  if (first && sequenceIndex >= first.sequence.length && !completed) finishSequence();
+}
+
+function updateMoveCounts() {
+  playedCountEl.textContent = String(playedMoves.length);
+  let total = 0;
+  if (currentJoseki && currentVariations.length > 0) {
+    const lengths = currentVariations.map(v => (v.sequence || []).filter(move => move[0] === currentJoseki.playColor).length);
+    total = Math.max(...lengths, 0);
   }
+  totalCountEl.textContent = String(total);
 }
 
 function renderPlayedMoves() {
   playedMovesEl.innerHTML = "";
-  playedMoves.forEach(([color, coord]) => {
+  playedMoves.forEach(([color, coord], index) => {
     const li = document.createElement("li");
-    li.textContent = `${labelColor(color)} ${coord}`;
+    const stone = document.createElement("span");
+    stone.className = `move-stone ${color === "B" ? "black" : "white"}`;
+    const number = document.createElement("span");
+    number.className = "move-number";
+    number.textContent = `${index + 1}.`;
+    const text = document.createElement("span");
+    text.className = "move-text";
+    text.textContent = `${labelColor(color)} ${coord}`;
+    li.appendChild(stone);
+    li.appendChild(number);
+    li.appendChild(text);
     playedMovesEl.appendChild(li);
   });
+  updateMoveCounts();
 }
 
 function showHint() {
   if (!currentJoseki) return;
   const hints = currentJoseki.hints || [];
   hintBox.style.display = "block";
-
-  if (hintIndex >= hints.length) {
-    hintBox.textContent = "Il n’y a plus d’indice.";
-  } else {
+  if (hintIndex >= hints.length) hintBox.textContent = "Il n’y a plus d’indice.";
+  else {
     hintBox.textContent = hints[hintIndex];
     hintIndex++;
   }
 }
 
 function sequenceToText(sequence) {
-  return (sequence || [])
-    .map(([color, coord]) => `${labelColor(color)} ${coord}`)
-    .join(" → ");
+  return (sequence || []).map(([color, coord]) => `${labelColor(color)} ${coord}`).join(" → ");
 }
 
 function showAnswer() {
   if (!currentJoseki) return;
-
   let sequenceHtml = "";
-
   if (currentVariations.length > 1) {
     sequenceHtml = currentVariations.map(variation => {
       const active = activeVariation && variation.id === activeVariation.id ? " <em>(variation jouée)</em>" : "";
@@ -512,7 +441,6 @@ function showAnswer() {
   } else {
     sequenceHtml = sequenceToText(currentVariations[0]?.sequence || []);
   }
-
   answerBox.innerHTML = `<strong>Séquence :</strong><br>${sequenceHtml}<br><br><strong>Explication :</strong><br>${currentJoseki.explanation || ""}`;
   answerBox.style.display = "block";
 }
