@@ -59,7 +59,7 @@ function normalizeVariations(joseki) {
 
 async function loadJosekiData() {
   try {
-    const response = await fetch("joseki.json?v=8", { cache: "no-store" });
+    const response = await fetch("joseki.json?v=9", { cache: "no-store" });
     if (!response.ok) throw new Error(`HTTP ${response.status}`);
     JOSEKI = await response.json();
     filteredJoseki = [...JOSEKI];
@@ -157,9 +157,9 @@ function loadJoseki(id) {
   statusEl.className = "status";
   if (currentVariations.length > 1) {
     const firstMoves = getPossibleUserMoves().join(" ou ");
-    statusEl.textContent = `V8 chargée. Plusieurs séquences sont possibles. Premier coup attendu : ${firstMoves}.`;
+    statusEl.textContent = `V9 chargée. Plusieurs séquences sont possibles. Premier coup attendu : ${firstMoves}.`;
   } else {
-    statusEl.textContent = `V8 chargée. Clique sur le goban pour jouer le prochain coup ${labelColor(currentJoseki.playColor).toLowerCase()}.`;
+    statusEl.textContent = `V9 chargée. Clique sur le goban pour jouer le prochain coup ${labelColor(currentJoseki.playColor).toLowerCase()}.`;
   }
 
   hintBox.style.display = "none";
@@ -387,31 +387,34 @@ function handleClick(event) {
 
 function updateMoveCounts() {
   playedCountEl.textContent = String(playedMoves.length);
+
   let total = 0;
   if (currentJoseki && currentVariations.length > 0) {
-    const lengths = currentVariations.map(v => (v.sequence || []).filter(move => move[0] === currentJoseki.playColor).length);
+    const lengths = currentVariations.map(v => (v.sequence || []).length);
     total = Math.max(...lengths, 0);
   }
+
   totalCountEl.textContent = String(total);
 }
 
 function renderPlayedMoves() {
   playedMovesEl.innerHTML = "";
-  playedMoves.forEach(([color, coord], index) => {
+
+  playedMoves.forEach(([color, coord]) => {
     const li = document.createElement("li");
+
     const stone = document.createElement("span");
     stone.className = `move-stone ${color === "B" ? "black" : "white"}`;
-    const number = document.createElement("span");
-    number.className = "move-number";
-    number.textContent = `${index + 1}.`;
-    const text = document.createElement("span");
-    text.className = "move-text";
-    text.textContent = `${labelColor(color)} ${coord}`;
+
+    const coordLabel = document.createElement("span");
+    coordLabel.className = "move-coord";
+    coordLabel.textContent = coord;
+
     li.appendChild(stone);
-    li.appendChild(number);
-    li.appendChild(text);
+    li.appendChild(coordLabel);
     playedMovesEl.appendChild(li);
   });
+
   updateMoveCounts();
 }
 

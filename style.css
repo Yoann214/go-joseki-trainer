@@ -173,29 +173,30 @@ canvas {
 
 .move-list {
   margin: 0;
-  padding: 0;
+  padding: 2px 0 4px;
   list-style: none;
-  display: grid;
-  gap: 8px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
 }
 
 .move-list li {
   background: #fffdfa;
   border: 1px solid #eadfc9;
-  border-radius: 12px;
-  padding: 10px 12px;
-  display: flex;
+  border-radius: 14px;
+  padding: 8px 9px 7px;
+  display: grid;
+  justify-items: center;
   align-items: center;
-  gap: 10px;
-  min-height: 42px;
+  gap: 4px;
+  min-width: 54px;
 }
 
 .move-stone {
-  width: 18px;
-  height: 18px;
+  width: 22px;
+  height: 22px;
   border-radius: 50%;
   display: inline-block;
-  flex: 0 0 18px;
 }
 
 .move-stone.black {
@@ -208,13 +209,12 @@ canvas {
   border: 1px solid #a5a5a5;
 }
 
-.move-number {
-  color: var(--muted);
+.move-coord {
+  color: #4b5563;
+  font-size: .82rem;
+  line-height: 1;
   font-weight: 700;
-  min-width: 26px;
 }
-
-.move-text { font-weight: 700; }
 
 .controls {
   display: grid;
