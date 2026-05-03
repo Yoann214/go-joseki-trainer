@@ -69,7 +69,7 @@ function normalizeVariations(joseki) {
 
 async function loadJosekiData() {
   try {
-    const response = await fetch("joseki.json", { cache: "no-store" });
+    const response = await fetch("joseki.json?v=4", { cache: "no-store" });
     if (!response.ok) throw new Error(`HTTP ${response.status}`);
     JOSEKI = await response.json();
     filteredJoseki = [...JOSEKI];
@@ -187,9 +187,9 @@ function loadJoseki(id) {
   statusEl.className = "status";
   if (currentVariations.length > 1) {
     const firstMoves = getPossibleUserMoves().join(" ou ");
-    statusEl.textContent = `Plusieurs séquences sont possibles. Premier coup attendu : ${firstMoves}.`;
+    statusEl.textContent = `V4 chargée. Plusieurs séquences sont possibles. Premier coup attendu : ${firstMoves}.`;
   } else {
-    statusEl.textContent = `Clique sur le goban pour jouer le prochain coup ${labelColor(currentJoseki.playColor).toLowerCase()}.`;
+    statusEl.textContent = `V4 chargée. Clique sur le goban pour jouer le prochain coup ${labelColor(currentJoseki.playColor).toLowerCase()}.`;
   }
 
   hintBox.style.display = "none";
@@ -400,15 +400,32 @@ function finishSequence() {
 }
 
 function handleClick(event) {
+  if (event.cancelable) event.preventDefault();
+
   if (completed || !currentJoseki) return;
 
   const coord = clickedCoord(event);
   if (!coord) return;
 
   const { x, y } = coordToPoint(coord);
+
   if (stones.has(key(x, y))) {
     statusEl.className = "status bad";
-    statusEl.textContent = `Intersection ${coord} déjà occupée.`;
+    statusEl.textContent = `Tu as cliqué ${coord}, mais cette intersection est déjà occupée.`;
+    return;
+  }
+
+  if (!candidateVariations || candidateVariations.length === 0) {
+    statusEl.className = "status bad";
+    statusEl.textContent = "Erreur : aucune variation disponible pour cette carte.";
+    return;
+  }
+
+  const expectedMoves = getPossibleUserMoves();
+
+  if (expectedMoves.length === 0) {
+    statusEl.className = "status bad";
+    statusEl.textContent = "Erreur : aucun coup utilisateur attendu à ce moment de la séquence.";
     return;
   }
 
@@ -418,9 +435,8 @@ function handleClick(event) {
   });
 
   if (matchingVariations.length === 0) {
-    const possible = getPossibleUserMoves().join(" ou ");
     statusEl.className = "status bad";
-    statusEl.textContent = `Pas ce coup. Tu as joué ${coord}. Coup attendu : ${possible}.`;
+    statusEl.textContent = `Tu as cliqué ${coord}. Coup attendu : ${expectedMoves.join(" ou ")}.`;
     return;
   }
 
@@ -435,10 +451,11 @@ function handleClick(event) {
 
   statusEl.className = "status ok";
   statusEl.textContent = `Correct : ${labelColor(currentJoseki.playColor)} ${coord}.`;
+
   playAutomaticOpponentMoves();
 
   const first = candidateVariations[0];
-  if (first && sequenceIndex >= first.sequence.length) {
+  if (first && sequenceIndex >= first.sequence.length && !completed) {
     finishSequence();
   }
 }
@@ -489,7 +506,7 @@ function showAnswer() {
   answerBox.style.display = "block";
 }
 
-canvas.addEventListener("click", handleClick);
+canvas.addEventListener("pointerdown", handleClick);
 select.addEventListener("change", e => loadJoseki(e.target.value));
 searchInput.addEventListener("input", filterJoseki);
 hintBtn.addEventListener("click", showHint);
