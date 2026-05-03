@@ -32,6 +32,8 @@ let stones = new Map();
 let hintIndex = 0;
 let playedMoves = [];
 let completed = false;
+let revealAnswerOnBoard = false;
+let answerSequenceToShow = null;
 
 function coordToPoint(coord) {
   const x = LETTERS.indexOf(coord[0].toUpperCase());
@@ -59,7 +61,7 @@ function normalizeVariations(joseki) {
 
 async function loadJosekiData() {
   try {
-    const response = await fetch("joseki.json?v=12", { cache: "no-store" });
+    const response = await fetch("joseki.json?v=13", { cache: "no-store" });
     if (!response.ok) throw new Error(`HTTP ${response.status}`);
     JOSEKI = await response.json();
     filteredJoseki = [...JOSEKI];
@@ -118,6 +120,8 @@ function showEmptyState(message) {
   activeVariation = null;
   currentVariations = [];
   candidateVariations = [];
+  revealAnswerOnBoard = false;
+  answerSequenceToShow = null;
   currentTitleEl.textContent = "Aucune carte";
   variationBoxEl.style.display = "none";
   variationTitleEl.textContent = "Aucune";
@@ -146,6 +150,8 @@ function loadJoseki(id) {
   hintIndex = 0;
   playedMoves = [];
   completed = false;
+  revealAnswerOnBoard = false;
+  answerSequenceToShow = null;
 
   currentTitleEl.textContent = currentJoseki.title || currentJoseki.id;
   goalEl.textContent = currentJoseki.goal || "";
@@ -157,9 +163,9 @@ function loadJoseki(id) {
   statusEl.className = "status";
   if (currentVariations.length > 1) {
     const firstMoves = getPossibleUserMoves().join(" ou ");
-    statusEl.textContent = `V12 chargée. Plusieurs séquences sont possibles. Premier coup attendu : ${firstMoves}.`;
+    statusEl.textContent = `V13 chargée. Plusieurs séquences sont possibles. Premier coup attendu : ${firstMoves}.`;
   } else {
-    statusEl.textContent = `V12 chargée. Clique sur le goban pour jouer le prochain coup ${labelColor(currentJoseki.playColor).toLowerCase()}.`;
+    statusEl.textContent = `V13 chargée. Clique sur le goban pour jouer le prochain coup ${labelColor(currentJoseki.playColor).toLowerCase()}.`;
   }
 
   hintBox.style.display = "none";
@@ -238,10 +244,14 @@ function drawBoard() {
     drawStone(margin + x * grid, margin + y * grid, grid * 0.43, color);
   });
 
+  if (revealAnswerOnBoard && answerSequenceToShow) {
+    drawNumberedSequence(answerSequenceToShow, margin, grid);
+  }
+
   if (completed) drawReviewMarkers(margin, grid);
 }
 
-function drawStone(cx, cy, r, color) {
+function drawStone(cx, cy, r, color, label = null) {
   const gradient = ctx.createRadialGradient(cx - r * .35, cy - r * .35, r * .15, cx, cy, r);
   if (color === "B") {
     gradient.addColorStop(0, "#555");
@@ -250,6 +260,7 @@ function drawStone(cx, cy, r, color) {
     gradient.addColorStop(0, "#fff");
     gradient.addColorStop(1, "#d8d8d8");
   }
+
   ctx.beginPath();
   ctx.arc(cx, cy, r, 0, Math.PI * 2);
   ctx.fillStyle = gradient;
@@ -257,6 +268,29 @@ function drawStone(cx, cy, r, color) {
   ctx.strokeStyle = color === "B" ? "#000" : "#999";
   ctx.lineWidth = 1.2;
   ctx.stroke();
+
+  if (label !== null) {
+    ctx.fillStyle = color === "B" ? "#ffffff" : "#111111";
+    ctx.font = `bold ${Math.max(11, Math.round(r * 0.85))}px system-ui, sans-serif`;
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+    ctx.fillText(String(label), cx, cy + 0.5);
+  }
+}
+
+function drawNumberedSequence(sequence, margin, grid) {
+  sequence.forEach(([color, coord], index) => {
+    const { x, y } = coordToPoint(coord);
+    if (x < 0 || y < 0 || x >= BOARD_SIZE || y >= BOARD_SIZE) return;
+
+    drawStone(
+      margin + x * grid,
+      margin + y * grid,
+      grid * 0.43,
+      color,
+      index + 1
+    );
+  });
 }
 
 function drawReviewMarkers(margin, grid) {
@@ -435,7 +469,9 @@ function sequenceToText(sequence) {
 
 function showAnswer() {
   if (!currentJoseki) return;
+
   let sequenceHtml = "";
+
   if (currentVariations.length > 1) {
     sequenceHtml = currentVariations.map(variation => {
       const active = activeVariation && variation.id === activeVariation.id ? " <em>(variation jouée)</em>" : "";
@@ -444,8 +480,21 @@ function showAnswer() {
   } else {
     sequenceHtml = sequenceToText(currentVariations[0]?.sequence || []);
   }
+
+  answerSequenceToShow = activeVariation
+    ? activeVariation.sequence
+    : currentVariations[0]?.sequence || [];
+
+  revealAnswerOnBoard = true;
+  completed = true;
+
+  statusEl.className = "status ok";
+  statusEl.textContent = "Réponse affichée sur le goban : les numéros indiquent l’ordre des coups.";
+
   answerBox.innerHTML = `<strong>Séquence :</strong><br>${sequenceHtml}<br><br><strong>Explication :</strong><br>${currentJoseki.explanation || ""}`;
   answerBox.style.display = "block";
+
+  drawBoard();
 }
 
 canvas.addEventListener("pointerdown", handleClick);
