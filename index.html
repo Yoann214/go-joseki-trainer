@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Go Joseki Trainer</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <main class="app">
+    <section class="panel">
+      <h1>Go Joseki Trainer</h1>
+      <p class="muted">Tu joues uniquement la couleur demandée. L’autre couleur est automatique.</p>
+
+      <label for="josekiSearch">Recherche</label>
+      <input type="text" id="josekiSearch" placeholder="Ex : 44-33-invasion" />
+
+      <label for="josekiSelect">Joseki à travailler</label>
+      <select id="josekiSelect"></select>
+
+      <div class="tag-row" id="tags"></div>
+
+      <div class="goal-box">
+        <strong>Objectif :</strong>
+        <p id="goal"></p>
+        <strong>Priorité :</strong>
+        <p id="priority"></p>
+      </div>
+
+      <h2>Consigne</h2>
+      <p id="instruction"></p>
+
+      <div class="status" id="status">Chargement des joseki...</div>
+
+      <div class="controls">
+        <button id="hintBtn" class="secondary">Indice</button>
+        <button id="resetBtn" class="secondary">Recommencer</button>
+        <button id="answerBtn" class="danger">Voir la réponse</button>
+      </div>
+
+      <div class="hint" id="hintBox"></div>
+      <div class="answer" id="answerBox"></div>
+
+      <h2>Séquence jouée</h2>
+      <ol class="move-list" id="playedMoves"></ol>
+    </section>
+
+    <section class="board-area">
+      <div class="board-card">
+        <canvas id="board" width="760" height="760" aria-label="Goban interactif"></canvas>
+      </div>
+    </section>
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>
