@@ -34,9 +34,9 @@ body {
   min-height: 100vh;
   padding: 16px;
   display: grid;
-  grid-template-columns: 280px minmax(620px, 860px) 220px;
+  grid-template-columns: 310px minmax(620px, 860px);
   gap: 16px;
-  align-items: start;
+  align-items: stretch;
   justify-content: center;
 }
 
@@ -55,16 +55,22 @@ body {
 .left-panel {
   display: flex;
   flex-direction: column;
+  justify-content: space-between;
+  gap: 18px;
+  align-self: stretch;
+  height: 100%;
+}
+
+.left-content {
+  display: flex;
+  flex-direction: column;
   gap: 10px;
 }
 
-.right-panel {
+.side-actions {
   display: flex;
   flex-direction: column;
   gap: 12px;
-  justify-content: flex-start;
-  align-self: start;
-  padding-top: 24px;
 }
 
 .brand {
@@ -300,7 +306,7 @@ button.danger {
    ========================= */
 @media (min-width: 1500px) {
   .app {
-    grid-template-columns: 320px minmax(720px, 900px) 250px;
+    grid-template-columns: 350px minmax(720px, 900px);
     gap: 20px;
   }
 
@@ -314,7 +320,7 @@ button.danger {
    ========================= */
 @media (max-height: 820px) and (min-width: 821px) {
   .app {
-    grid-template-columns: 270px minmax(560px, 760px) 200px;
+    grid-template-columns: 300px minmax(560px, 760px);
     gap: 12px;
     padding: 10px;
   }
@@ -327,6 +333,10 @@ button.danger {
   .study-card {
     padding: 12px;
     gap: 8px;
+  }
+
+  .side-panel {
+    padding: 12px;
   }
 
   h1 {
@@ -386,6 +396,9 @@ button.danger {
 
   .left-panel {
     order: 2;
+    height: auto;
+    display: flex;
+    flex-direction: column;
   }
 
   .study-card {
@@ -393,14 +406,6 @@ button.danger {
     display: block;
     padding: 12px;
     overflow: visible;
-  }
-
-  .right-panel {
-    order: 3;
-    display: grid;
-    grid-template-columns: 1fr;
-    justify-content: stretch;
-    padding-top: 12px;
   }
 
   .brand {

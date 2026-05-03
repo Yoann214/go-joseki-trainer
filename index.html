@@ -4,24 +4,32 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Go Joseki Trainer</title>
-  <link rel="stylesheet" href="style.css?v=11" />
+  <link rel="stylesheet" href="style.css?v=12" />
 </head>
 <body>
   <main class="app">
     <aside class="side-panel left-panel">
-      <div class="brand">Go Joseki Trainer</div>
+      <div class="left-content">
+        <div class="brand">Go Joseki Trainer</div>
 
-      <label for="josekiSearch">Recherche</label>
-      <input type="text" id="josekiSearch" placeholder="Rechercher..." />
+        <label for="josekiSearch">Recherche</label>
+        <input type="text" id="josekiSearch" placeholder="Rechercher..." />
 
-      <label for="josekiSelect">Séquence</label>
-      <select id="josekiSelect"></select>
+        <label for="josekiSelect">Séquence</label>
+        <select id="josekiSelect"></select>
 
-      <div class="status" id="status">Chargement des joseki...</div>
+        <div class="status" id="status">Chargement des joseki...</div>
 
-      <div class="variation-box" id="variationBox">
-        <span class="variation-label">Variation active</span>
-        <strong id="variationTitle">Aucune</strong>
+        <div class="variation-box" id="variationBox">
+          <span class="variation-label">Variation active</span>
+          <strong id="variationTitle">Aucune</strong>
+        </div>
+      </div>
+
+      <div class="side-actions">
+        <button id="hintBtn" class="secondary">Indice</button>
+        <button id="resetBtn" class="secondary">Recommencer</button>
+        <button id="answerBtn" class="danger">Voir la réponse</button>
       </div>
     </aside>
 
@@ -51,14 +59,8 @@
       <div class="hint" id="hintBox"></div>
       <div class="answer" id="answerBox"></div>
     </section>
-
-    <aside class="side-panel right-panel">
-      <button id="hintBtn" class="secondary">Indice</button>
-      <button id="resetBtn" class="secondary">Recommencer</button>
-      <button id="answerBtn" class="danger">Voir la réponse</button>
-    </aside>
   </main>
 
-  <script src="app.js?v=11"></script>
+  <script src="app.js?v=12"></script>
 </body>
 </html>

@@ -59,7 +59,7 @@ function normalizeVariations(joseki) {
 
 async function loadJosekiData() {
   try {
-    const response = await fetch("joseki.json?v=11", { cache: "no-store" });
+    const response = await fetch("joseki.json?v=12", { cache: "no-store" });
     if (!response.ok) throw new Error(`HTTP ${response.status}`);
     JOSEKI = await response.json();
     filteredJoseki = [...JOSEKI];
@@ -157,9 +157,9 @@ function loadJoseki(id) {
   statusEl.className = "status";
   if (currentVariations.length > 1) {
     const firstMoves = getPossibleUserMoves().join(" ou ");
-    statusEl.textContent = `V11 chargée. Plusieurs séquences sont possibles. Premier coup attendu : ${firstMoves}.`;
+    statusEl.textContent = `V12 chargée. Plusieurs séquences sont possibles. Premier coup attendu : ${firstMoves}.`;
   } else {
-    statusEl.textContent = `V11 chargée. Clique sur le goban pour jouer le prochain coup ${labelColor(currentJoseki.playColor).toLowerCase()}.`;
+    statusEl.textContent = `V12 chargée. Clique sur le goban pour jouer le prochain coup ${labelColor(currentJoseki.playColor).toLowerCase()}.`;
   }
 
   hintBox.style.display = "none";
