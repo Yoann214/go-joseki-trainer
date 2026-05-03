@@ -160,5 +160,207 @@
         "M18"
       ]
     }
+  },
+  {
+    "id": "san-rensei-attachement-r10-blanc",
+    "title": "San-Rensei attachement R10 — jouer Blanc",
+    "playColor": "W",
+    "tags": [
+      "san-rensei",
+      "attachement",
+      "R10",
+      "jouer blanc",
+      "invasion"
+    ],
+    "goal": "Joue Blanc pour attacher en R10 contre le San-Rensei noir et suivre une séquence correcte.",
+    "priority": "Créer un point d’appui sur le côté droit sans donner à Noir une attaque trop facile.",
+    "instruction": "La position démarre avant l’attachement. Commence par Blanc R10, puis suis la séquence.",
+    "hints": [
+      "Le premier coup blanc est l’attachement en R10.",
+      "Après la réponse noire, garde une forme légère sur le bord droit.",
+      "Le but n’est pas de vivre immédiatement, mais de réduire et de créer du jeu."
+    ],
+    "explanation": "Blanc s’attache en R10 pour réduire le San-Rensei noir. La séquence choisie montre une direction où Blanc développe une forme sur le côté droit pendant que Noir obtient une réponse solide.",
+    "start": [
+      [
+        "B",
+        "Q16"
+      ],
+      [
+        "B",
+        "Q10"
+      ],
+      [
+        "B",
+        "Q4"
+      ],
+      [
+        "W",
+        "D16"
+      ],
+      [
+        "W",
+        "D4"
+      ]
+    ],
+    "sequence": [
+      [
+        "W",
+        "R10"
+      ],
+      [
+        "B",
+        "R9"
+      ],
+      [
+        "W",
+        "R11"
+      ],
+      [
+        "B",
+        "Q9"
+      ],
+      [
+        "W",
+        "R14"
+      ],
+      [
+        "B",
+        "R15"
+      ],
+      [
+        "W",
+        "Q14"
+      ],
+      [
+        "B",
+        "O16"
+      ]
+    ],
+    "reviewMarkers": {
+      "good": [],
+      "bad": []
+    }
+  },
+  {
+    "id": "san-rensei-attachement-r10-noir",
+    "title": "San-Rensei attachement R10 — jouer Noir",
+    "playColor": "B",
+    "tags": [
+      "san-rensei",
+      "attachement",
+      "R10",
+      "jouer noir",
+      "variations"
+    ],
+    "goal": "Joue Noir contre l’attachement blanc en R10.",
+    "priority": "Choisir une des deux réponses symétriques correctes, puis suivre la direction associée.",
+    "instruction": "Blanc vient de s’attacher en R10. Deux séquences noires sont acceptées : réponse par le bas ou réponse par le haut.",
+    "hints": [
+      "La position est symétrique : Noir peut répondre en R9 ou en R11.",
+      "Après ton premier coup, la page choisit automatiquement la variation correspondante.",
+      "Ne mélange pas les deux directions : chaque réponse a sa suite logique."
+    ],
+    "explanation": "Noir a deux réponses symétriques contre l’attachement blanc en R10. Répondre en R9 développe une séquence vers le haut ; répondre en R11 développe une séquence vers le bas.",
+    "start": [
+      [
+        "B",
+        "Q16"
+      ],
+      [
+        "B",
+        "Q10"
+      ],
+      [
+        "B",
+        "Q4"
+      ],
+      [
+        "W",
+        "D16"
+      ],
+      [
+        "W",
+        "D4"
+      ],
+      [
+        "W",
+        "R10"
+      ]
+    ],
+    "variations": [
+      {
+        "id": "reponse-bas",
+        "name": "Réponse par le bas : Noir R9",
+        "sequence": [
+          [
+            "B",
+            "R9"
+          ],
+          [
+            "W",
+            "R11"
+          ],
+          [
+            "B",
+            "Q9"
+          ],
+          [
+            "W",
+            "R14"
+          ],
+          [
+            "B",
+            "R15"
+          ],
+          [
+            "W",
+            "Q14"
+          ],
+          [
+            "B",
+            "O16"
+          ]
+        ]
+      },
+      {
+        "id": "reponse-haut",
+        "name": "Réponse par le haut : Noir R11",
+        "sequence": [
+          [
+            "B",
+            "R11"
+          ],
+          [
+            "W",
+            "R9"
+          ],
+          [
+            "B",
+            "Q11"
+          ],
+          [
+            "W",
+            "R6"
+          ],
+          [
+            "B",
+            "R5"
+          ],
+          [
+            "W",
+            "Q6"
+          ],
+          [
+            "B",
+            "O4"
+          ]
+        ]
+      }
+    ],
+    "reviewMarkers": {
+      "good": [],
+      "bad": []
+    }
   }
 ]

@@ -1,4 +1,4 @@
- :root {
+:root {
   --bg: #f6efe3;
   --panel: #ffffff;
   --board: #d9ad55;
@@ -55,7 +55,8 @@ input[type="text"], select {
 input[type="text"] { margin-bottom: 8px; }
 select { margin-bottom: 12px; }
 
-.current-card {
+.current-card,
+.variation-box {
   background: #f9fafb;
   border: 1px solid #e5e7eb;
   border-radius: 12px;
@@ -63,7 +64,12 @@ select { margin-bottom: 12px; }
   margin: 8px 0 12px;
 }
 
-.current-card-label {
+.variation-box {
+  display: none;
+}
+
+.current-card-label,
+.variation-label {
   display: block;
   font-size: .8rem;
   color: var(--muted);
@@ -73,7 +79,8 @@ select { margin-bottom: 12px; }
   margin-bottom: 4px;
 }
 
-#currentTitle {
+#currentTitle,
+#variationTitle {
   display: block;
   font-size: 1.05rem;
   margin-bottom: 6px;

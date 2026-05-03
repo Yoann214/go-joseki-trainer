@@ -13,7 +13,7 @@
       <p class="muted">Tu joues uniquement la couleur demandée. L’autre couleur est automatique.</p>
 
       <label for="josekiSearch">Recherche</label>
-      <input type="text" id="josekiSearch" placeholder="Ex : 44-33-invasion" />
+      <input type="text" id="josekiSearch" placeholder="Ex : san-rensei ou 44-33-invasion" />
 
       <label for="josekiSelect">Joseki à travailler</label>
       <select id="josekiSelect"></select>
@@ -22,6 +22,11 @@
         <span class="current-card-label">Carte actuelle</span>
         <strong id="currentTitle">Chargement...</strong>
         <code id="directLink"></code>
+      </div>
+
+      <div class="variation-box" id="variationBox">
+        <span class="variation-label">Variation active</span>
+        <strong id="variationTitle">Aucune</strong>
       </div>
 
       <div class="tag-row" id="tags"></div>
