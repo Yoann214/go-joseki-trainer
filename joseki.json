@@ -362,5 +362,258 @@
       "good": [],
       "bad": []
     }
+  },
+  {
+    "id": "44-low-approach-001-white",
+    "title": "4-4 approche basse — jouer Blanc",
+    "playColor": "W",
+    "tags": [
+      "4-4",
+      "low approach",
+      "3-3 invasion",
+      "white",
+      "corner life"
+    ],
+    "goal": "Joue Blanc pour envahir au niveau du 3-3 et vivre dans le coin.",
+    "priority": "Blanc cherche à obtenir une vie locale claire dans le coin, même si le résultat reste favorable à Noir.",
+    "instruction": "Noir a déjà bloqué l'approche basse. Commence par l'invasion au 3-3, puis suis la séquence pour vivre dans le coin.",
+    "hints": [
+      "Essaie de briser l’encerclement.",
+      "La position dans le coin n’est pas vivante en l’état. Il y a seki."
+    ],
+    "explanation": "La position finale est bonne pour Noir, et Blanc peut tenuki.",
+    "start": [
+      [
+        "B",
+        "Q16"
+      ],
+      [
+        "W",
+        "D16"
+      ],
+      [
+        "B",
+        "Q4"
+      ],
+      [
+        "W",
+        "D4"
+      ],
+      [
+        "B",
+        "R9"
+      ],
+      [
+        "W",
+        "O17"
+      ],
+      [
+        "B",
+        "Q14"
+      ]
+    ],
+    "sequence": [
+      [
+        "W",
+        "R17"
+      ],
+      [
+        "B",
+        "Q17"
+      ],
+      [
+        "W",
+        "Q18"
+      ],
+      [
+        "B",
+        "P18"
+      ],
+      [
+        "W",
+        "R18"
+      ],
+      [
+        "B",
+        "P17"
+      ],
+      [
+        "W",
+        "S15"
+      ],
+      [
+        "B",
+        "S14"
+      ],
+      [
+        "W",
+        "R15"
+      ],
+      [
+        "B",
+        "R14"
+      ],
+      [
+        "W",
+        "Q15"
+      ],
+      [
+        "B",
+        "P15"
+      ],
+      [
+        "W",
+        "O18"
+      ],
+      [
+        "B",
+        "P19"
+      ],
+      [
+        "W",
+        "R16"
+      ],
+      [
+        "B",
+        "N14"
+      ],
+      [
+        "W",
+        "K17"
+      ],
+      [
+        "B",
+        "O16"
+      ]
+    ],
+    "reviewMarkers": {
+      "good": [],
+      "bad": []
+    }
+  },
+  {
+    "id": "44-low-approach-001-black",
+    "title": "4-4 approche basse — jouer Noir",
+    "playColor": "B",
+    "tags": [
+      "4-4",
+      "low approach",
+      "3-3 invasion",
+      "black",
+      "block"
+    ],
+    "goal": "Noir bloque en Q17 pour forcer Blanc à vivre petit dans le coin.",
+    "priority": "Noir accepte que Blanc vive, mais cherche à limiter son espace et à obtenir le meilleur résultat local.",
+    "instruction": "Blanc vient d'envahir au 3-3. Joue Noir pour bloquer en Q17 et forcer Blanc à vivre petit dans le coin.",
+    "hints": [],
+    "explanation": "La position finale est bonne pour Noir, et Blanc peut tenuki.",
+    "start": [
+      [
+        "B",
+        "Q16"
+      ],
+      [
+        "W",
+        "D16"
+      ],
+      [
+        "B",
+        "Q4"
+      ],
+      [
+        "W",
+        "D4"
+      ],
+      [
+        "B",
+        "R9"
+      ],
+      [
+        "W",
+        "O17"
+      ],
+      [
+        "B",
+        "Q14"
+      ],
+      [
+        "W",
+        "R17"
+      ]
+    ],
+    "sequence": [
+      [
+        "B",
+        "Q17"
+      ],
+      [
+        "W",
+        "Q18"
+      ],
+      [
+        "B",
+        "P18"
+      ],
+      [
+        "W",
+        "R18"
+      ],
+      [
+        "B",
+        "P17"
+      ],
+      [
+        "W",
+        "S15"
+      ],
+      [
+        "B",
+        "S14"
+      ],
+      [
+        "W",
+        "R15"
+      ],
+      [
+        "B",
+        "R14"
+      ],
+      [
+        "W",
+        "Q15"
+      ],
+      [
+        "B",
+        "P15"
+      ],
+      [
+        "W",
+        "O18"
+      ],
+      [
+        "B",
+        "P19"
+      ],
+      [
+        "W",
+        "R16"
+      ],
+      [
+        "B",
+        "N14"
+      ],
+      [
+        "W",
+        "K17"
+      ],
+      [
+        "B",
+        "O16"
+      ]
+    ],
+    "reviewMarkers": {
+      "good": [],
+      "bad": []
+    }
   }
 ]
